@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class ScoreManager : Singleton<ScoreManager>
 {   
-    protected int PlayerLevel;
-    protected int AtkUG;
-    protected int Coin;
-    protected int Exp;
-    protected int BStage;
+    protected int PlayerLevel = PlayerPrefs.GetInt("Level");
+    protected int AtkUG = PlayerPrefs.GetInt("AtkUG");
+    protected int Coin = PlayerPrefs.GetInt("Coin");
+    protected int Exp = PlayerPrefs.GetInt("Exp");
+    protected int BStage = PlayerPrefs.GetInt("BStage");
     protected int Stage;
     protected bool IsLobby; // 로비 화면인지를 체크
-    protected bool IsSoundOn; // 소리가 켜져있는지 체크
+    protected bool IsSoundOn = true; // 소리가 켜져있는지 체크
     protected bool IsDragonDie; // 드래곤이 현재 사망상태인지 체크
 
 
@@ -161,8 +161,6 @@ public class ScoreManager : Singleton<ScoreManager>
     public static int totalIntFormula(int nowStageLv, int BasicPlus, int EditDef, int EditPlus, int BasicCor, int EditCor)
     {
         int cal = 0;
-        if(nowStageLv <= 1)
-            return cal;
 
         cal = ((nowStageLv / BasicCor) * BasicPlus) + EditDef + ((nowStageLv / EditCor) * EditPlus);
 
@@ -172,8 +170,6 @@ public class ScoreManager : Singleton<ScoreManager>
     public static float totalFloatFormula(int nowStageLv, float BasicPlus, float EditDef, float EditPlus, int BasicCor, int EditCor)
     {
         float cal = 0;
-        if(nowStageLv <= 1)
-            return cal;
 
         cal = ((nowStageLv / BasicCor) * BasicPlus) + EditDef + ((nowStageLv / EditCor) * EditPlus);
 
