@@ -42,6 +42,7 @@
      <Compile Include="Assets\06.Controllers\Fixed.cs" />
      <Compile Include="Assets\06.Controllers\Ingame\IG_BtnManager.cs" />
      <Compile Include="Assets\06.Controllers\Lobby\LobbyManager.cs" />
+     <Compile Include="Assets\06.Controllers\Lobby\Lobby_BtnManager.cs" />
      <Compile Include="Assets\06.Controllers\ScoreManager.cs" />
      <Compile Include="Assets\06.Controllers\Singleton.cs" />
      <Compile Include="Assets\06.Controllers\SoundManager.cs" />
