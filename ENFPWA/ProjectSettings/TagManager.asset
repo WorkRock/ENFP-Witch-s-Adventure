@@ -3,7 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - ElectroBall
+  - PyroBall
+  - WaterBall
+  - IceBall
+  - Dragon
+  - Player_Atk
+  - Obstacle
+  - ElectroShield
+  - PyroShield
+  - IceShield
+  - WaterShield
+  - Border
   layers:
   - Default
   - TransparentFX
