@@ -229,7 +229,7 @@ public class LobbyManager : MonoBehaviour
         totalUGCTCal();
         totalUGNeedCoinCal();
 
-        ScoreManager.SetPlayerTotalAtk(Player_HP_TotalHP);
+        ScoreManager.SetPlayerHP(Player_HP_TotalHP);
         ScoreManager.SetPlayerTotalAtk(Player_Atk_TotalPlusUG);
         ScoreManager.SetShieldCT(UG_CT_TotalCT);
 
@@ -488,6 +488,7 @@ public class LobbyManager : MonoBehaviour
         ScoreManager.totalIntFormula(Level-1, Player_HP_BasicPlus, Player_HP_EditDefault
         , Player_HP_EditPlus, Player_HP_BasicCor, Player_HP_EditCor);
 
+        ScoreManager.SetPlayerHP(Player_HP_TotalHP);
         if(Player_HP_TotalHP >= Player_HP_Max)
         {
             Player_HP_TotalHP = Player_HP_Max;
