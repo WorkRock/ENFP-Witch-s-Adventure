@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviour
@@ -6,9 +7,21 @@ public class LobbyManager : MonoBehaviour
     private int Level;
     private int AtkUG;
     private int Coin;
-
+    private bool isLobby;
+    private bool isLobbyDelay;
+    private bool isLobbyUIOn;
+    private bool isLobbySpriteDelay;
+    private int LobbySpriteDir;
+    [SerializeField] private float fdt;
 
     [Header("UI_MainLobby")]
+    public GameObject LobbyIntro;
+    public Text PressAnyKey;
+    public Image BlackBG;
+    public Image ToothlessLogo;
+
+    public Image UI_LobbySprite;
+    public GameObject UI_Lobby;
     public Slider Main_ExpSlider;
     public Text Main_Level;
     public Text Main_Coin;
@@ -18,10 +31,15 @@ public class LobbyManager : MonoBehaviour
     private bool isSoundOn;
 
     [Header("UI_Info")]
+    public GameObject Info_AtkUG_01;
+    public GameObject Info_AtkUG_02;
+    public GameObject Info_AtkUG_03;
     public Text Info_Level;
     public Text Info_HP;
     public Text Info_Atk;
     public Text Info_AtkUG;
+    public Text Info_AtkUG_DMG;
+    public Text Info_AtkUG_CT;
     public Text Info_Exp;
 
 
@@ -44,7 +62,7 @@ public class LobbyManager : MonoBehaviour
     public int Player_HP_Max;
 
     [Header("Player_Atk")]
-    public int Player_Atk_TotalPlusUG;
+    public float Player_Atk_TotalPlusUG;
     public int Player_Atk_TotalAtk;
     
     [Space(10f)]
@@ -157,11 +175,21 @@ public class LobbyManager : MonoBehaviour
     [Space(10f)]
     public int UG_NeedCoin_Max;
 
-    
+    Color color;
 
 
     void Start()
     {
+        LobbyIntro.SetActive(true);
+        color = PressAnyKey.color;
+
+        isLobbySpriteDelay = true;
+        LobbySpriteDir = 1;
+        isLobby = false;
+        isLobbyUIOn = false;
+        isLobbyDelay = true;
+
+    
         Level = ScoreManager.GetPlayerLevel();
         if(Level <= 1)
         {   
@@ -183,7 +211,7 @@ public class LobbyManager : MonoBehaviour
         Player_HP_TotalHP = Player_HP_BasicDefault;
         Player_Atk_TotalAtk = Player_Atk_BasicDefault;
         Player_Exp_TotalExp = Player_Exp_BasicDefault;
-
+        
         Player_Exp_CurExp = ScoreManager.GetExp();
 
         UG_DMG_TotalAtk = UG_DMG_BasicDefault;
@@ -191,6 +219,7 @@ public class LobbyManager : MonoBehaviour
         UG_CT_TotalCT = UG_CT_BasicDefault;
         UG_NeedCoin_TotalNeedCoin = UG_NeedCoin_BasicDefault;
 
+        Player_Atk_TotalPlusUG = Player_Atk_TotalAtk * UG_DMG_TotalAtk;
         
 
         totalHPCal();
@@ -201,7 +230,7 @@ public class LobbyManager : MonoBehaviour
         totalUGNeedCoinCal();
 
         ScoreManager.SetPlayerTotalAtk(Player_HP_TotalHP);
-        ScoreManager.SetPlayerTotalAtk(Player_Atk_TotalAtk * UG_DMG_TotalAtk);
+        ScoreManager.SetPlayerTotalAtk(Player_Atk_TotalPlusUG);
         ScoreManager.SetShieldCT(UG_CT_TotalCT);
 
         MarkLevel();
@@ -209,7 +238,49 @@ public class LobbyManager : MonoBehaviour
     }
 
     void Update()
-    {   
+    {
+        isLobby = ScoreManager.GetIsLobby();
+
+        if(isLobbyDelay & !isLobby)
+            fdt += Time.deltaTime;        
+        
+        color.a += (float)(LobbySpriteDir / (float)20);
+
+        PressAnyKey.color = color;
+
+        if(isLobbySpriteDelay) 
+        {
+            isLobbySpriteDelay = false;
+            StartCoroutine(LobbySpriteMove());
+        }
+
+        if(fdt > 4.5)
+        {
+            fdt = 0;
+            isLobbyDelay = false;
+            isLobby = true;
+            ScoreManager.SetIsLobby(isLobby);
+        }
+
+        CheatMode();
+
+        if(Input.anyKeyDown)
+        {   
+            if(isLobbyDelay)
+                return;
+            
+            isLobbyDelay = true;
+            SoundManager.instance.PlayAudio_01("Btn_Normal");
+            LobbyIntro.SetActive(false);
+            isLobbyUIOn = true;
+            isLobby = true;
+            ScoreManager.SetIsLobby(isLobby);
+        }
+
+
+        if(isLobbyUIOn) UI_Lobby.SetActive(true);
+        else UI_Lobby.SetActive(false);
+
         isSoundOn = ScoreManager.GetIsSoundOn();
 
         if(isSoundOn)
@@ -223,7 +294,7 @@ public class LobbyManager : MonoBehaviour
         }
 
         // 테스트를 위한 치트모드
-        CheatMode();
+        
 
         LevelEdit();
         
@@ -232,11 +303,14 @@ public class LobbyManager : MonoBehaviour
 
         Info_Level.text = Level.ToString();
         Info_HP.text = Player_HP_TotalHP.ToString();
-        Info_Atk.text = (Player_Atk_TotalAtk).ToString();
-        Info_AtkUG.text = AtkUG.ToString();
+        Info_Atk.text =  Player_Atk_TotalAtk + " x " + (UG_DMG_TotalAtk * 100) + "% (" + Player_Atk_TotalPlusUG.ToString("F2") + ")".ToString();
+        Info_AtkUG.text =  AtkUG.ToString();
         Info_Exp.text = ("<b><color=green>"+ Player_Exp_CurExp + "</color></b>" +" / " + Player_Exp_TotalExp).ToString();
-    
+        Info_AtkUG_DMG.text = ((UG_DMG_TotalAtk * 100) + "%").ToString();
+        Info_AtkUG_CT.text = UG_CT_TotalCT.ToString();
+
         Shop_AtkUG.text = AtkUG.ToString();
+
         if(UG_NeedCoin_TotalNeedCoin > Coin)
         {
             Shop_NeedCoin.text = ("<b><color=red>"+ GetThousandCommaText(UG_NeedCoin_TotalNeedCoin) + "</color></b>").ToString();
@@ -248,6 +322,7 @@ public class LobbyManager : MonoBehaviour
         {
             if(AtkUG >= 40) 
             {
+                Info_AtkUG.text = "<color=green>Max</color>";
                 Shop_AtkUG.text = "<color=green>Max Level</color>";
                 Shop_NeedCoin.text = "<color=green>Max Level</color>";
                 Upgrade.interactable = false;
@@ -265,6 +340,21 @@ public class LobbyManager : MonoBehaviour
         Shop_UGNext.text = ((UG_DMG_TotalNext * 100) + "%").ToString();
         Shop_UGCT.text = UG_CT_TotalCT.ToString();
     }
+
+    IEnumerator LobbySpriteMove()
+    {
+        yield return new WaitForSeconds(1.0f);
+        UI_LobbySprite.transform.rotation = Quaternion.Euler(0, 0, LobbySpriteDir*5);
+        
+        LobbySpriteDir *= (-1);
+        isLobbySpriteDelay = true;
+    }
+
+    IEnumerator LobbyDelay()
+    {
+        yield return new WaitForSeconds(3.0f);
+    }
+
 
     void CheatMode()
     {
@@ -316,7 +406,7 @@ public class LobbyManager : MonoBehaviour
             MarkLevel();
 
             ScoreManager.SetPlayerTotalAtk(Player_HP_TotalHP);
-            ScoreManager.SetPlayerTotalAtk(Player_Atk_TotalAtk * UG_DMG_TotalAtk);
+            ScoreManager.SetPlayerTotalAtk(Player_Atk_TotalPlusUG);
         }
     }
 
@@ -339,15 +429,19 @@ public class LobbyManager : MonoBehaviour
             totalUGNeedCoinCal();
             Shop_MarkLevel();
 
-            ScoreManager.SetPlayerTotalAtk(Player_Atk_TotalAtk * UG_DMG_TotalAtk);
+            ScoreManager.SetPlayerTotalAtk(Player_Atk_TotalPlusUG);
             ScoreManager.SetShieldCT(UG_CT_TotalCT);
         }
     }
 
     void Shop_MarkLevel()
     {
-        if(AtkUG <= Shop_FirstUGLevelMax)
+        if(AtkUG < Shop_FirstUGLevelMax)
         {
+            Info_AtkUG_01.SetActive(true);
+            Info_AtkUG_02.SetActive(false);
+            Info_AtkUG_03.SetActive(false);
+
             Shop_FirstUG.SetActive(true);
             Shop_SecondUG.SetActive(false);
             
@@ -357,8 +451,12 @@ public class LobbyManager : MonoBehaviour
                 Shop_FirstUGSlider.value = 0;
         }
 
-        else if(AtkUG <= Shop_SecondUGLevelMax)
+        else if(AtkUG < Shop_SecondUGLevelMax)
         {
+            Info_AtkUG_01.SetActive(false);
+            Info_AtkUG_02.SetActive(true);
+            Info_AtkUG_03.SetActive(false);
+
             Shop_FirstUG.SetActive(false);
             Shop_SecondUG.SetActive(true);
 
@@ -370,12 +468,15 @@ public class LobbyManager : MonoBehaviour
 
         else
         {
+            Info_AtkUG_01.SetActive(false);
+            Info_AtkUG_02.SetActive(false);
+            Info_AtkUG_03.SetActive(true);
+
             Shop_FirstUG.SetActive(false);
             Shop_SecondUG.SetActive(true);
             Shop_SecondUGSlider.value = 1;
         }
     }
-
 
 
     void totalHPCal()
@@ -401,6 +502,8 @@ public class LobbyManager : MonoBehaviour
         Player_Atk_TotalAtk = Player_Atk_BasicDefault +
         ScoreManager.totalIntFormula(Level-1, Player_Atk_BasicPlus, Player_Atk_EditDefault
         , Player_Atk_EditPlus, Player_Atk_BasicCor, Player_Atk_EditCor);
+
+        Player_Atk_TotalPlusUG = Player_Atk_TotalAtk * UG_DMG_TotalAtk;
 
         if(Player_Atk_TotalAtk >= Player_Atk_Max)
         {

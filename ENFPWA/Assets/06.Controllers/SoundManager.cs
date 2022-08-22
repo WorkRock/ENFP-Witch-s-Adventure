@@ -1,6 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class SoundManager : MonoBehaviour
 {
@@ -45,6 +45,10 @@ public class SoundManager : MonoBehaviour
 
     private string NowBGMname="";
 
+
+    private bool isLobby;
+    private bool isSoundOn;
+
     void Start()
     {
         BGM = gameObject.AddComponent<AudioSource>();
@@ -54,6 +58,37 @@ public class SoundManager : MonoBehaviour
         audioSource_04 = gameObject.AddComponent<AudioSource>();
         audioSource_05 = gameObject.AddComponent<AudioSource>();
         BGM.loop = true;
+    }
+
+    void Update()
+    {
+        isLobby = ScoreManager.GetIsLobby();
+        isSoundOn = ScoreManager.GetIsSoundOn();
+
+        if(!isSoundOn) SoundOff();
+
+        switch(SceneManager.GetActiveScene().name)
+        {
+            case "Lobby":
+            if(isLobby & isSoundOn)
+            {
+                SoundOn();
+                PlayBGM("Lobby");
+            }
+            else
+            {
+                SoundOff();
+            }
+            break;
+
+            case "Ingame":
+            PlayBGM("Ingame");
+            break;
+
+            case "Result":
+            PlayBGM("Result");
+            break;
+        }
     }
     
     public void PlayBGM(string name)
@@ -117,6 +152,26 @@ public class SoundManager : MonoBehaviour
                 audioSource_05.clip = AudioList[i].audio;
                 audioSource_05.Play();
             }
+    }
+
+    void SoundOn()
+    {
+        BGM.mute = false;
+        audioSource_01.mute = false;
+        audioSource_02.mute = false;
+        audioSource_03.mute = false;
+        audioSource_04.mute = false;
+        audioSource_05.mute = false;
+    }
+
+    void SoundOff()
+    {
+        BGM.mute = true;
+        audioSource_01.mute = true;
+        audioSource_02.mute = true;
+        audioSource_03.mute = true;
+        audioSource_04.mute = true;
+        audioSource_05.mute = true;
     }
 
 }

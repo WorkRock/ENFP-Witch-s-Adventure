@@ -15,7 +15,6 @@ public class Lobby_BtnManager : MonoBehaviour
     public GameObject Credit;
     public GameObject Option;
 
-
     public GameObject OptionFunc;
     public GameObject Warning;
     public GameObject Reset;
@@ -31,8 +30,8 @@ public class Lobby_BtnManager : MonoBehaviour
     private bool isOption;
 
 
-    private bool isReset;
-    private bool isQuit;
+    private bool isReset = false;
+    private bool isQuit = false;
 
 
 
@@ -126,7 +125,7 @@ public class Lobby_BtnManager : MonoBehaviour
     // Account Reset
     public void ResetAccount()
     {
-        if (isQuit)
+        if (isQuit || isReset)
             return;
 
         OptionFunc.SetActive(true);
@@ -156,6 +155,7 @@ public class Lobby_BtnManager : MonoBehaviour
         ScoreManager.SetCoin(0);
         ScoreManager.SetExp(0);
         ScoreManager.SetBStage(0);
+        ScoreManager.SetIsLobby(false);
 
         SceneManager.LoadScene("Lobby");
     }
@@ -164,7 +164,7 @@ public class Lobby_BtnManager : MonoBehaviour
     // Quit Game
     public void Quit()
     {
-        if (isReset)
+        if (isReset || isQuit)
             return;
 
         OptionFunc.SetActive(true);
@@ -194,6 +194,7 @@ public class Lobby_BtnManager : MonoBehaviour
     // GameStart Btn
     public void GameStart()
     {
+        ScoreManager.SetIsLobby(false);
         ScoreManager.SetStage(1);
         SceneManager.LoadScene("Ingame");
     }
