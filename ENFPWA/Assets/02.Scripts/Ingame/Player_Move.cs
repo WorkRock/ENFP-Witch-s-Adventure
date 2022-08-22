@@ -67,17 +67,14 @@ public class Player_Move : MonoBehaviour
         Player_HP_Bar.value = 1.0f;
 
         //HP 초기화
-        //Player_Total_HP = ScoreManager.GetPlayerHP();
-        Player_Total_HP = 100;
+        Player_Total_HP = ScoreManager.GetPlayerHP();
         Player_Now_HP = Player_Total_HP;
 
         //공격력 초기화
-        //Player_Atk = ScoreManager.GetPlayerTotalAtk();
-        Player_Atk = 40;
-
+        Player_Atk = ScoreManager.GetPlayerTotalAtk();
+       
         //쉴드 쿨타임 초기화
         Player_ShieldCT = ScoreManager.GetShieldCT();
-
     }
 
     // Update is called once per frame
@@ -111,7 +108,7 @@ public class Player_Move : MonoBehaviour
         {
             gameObject.SetActive(false);
             Time.timeScale = 0;
-            //SceneManager.LoadScene("Result");
+            SceneManager.LoadScene("Result");
         }
     }
 

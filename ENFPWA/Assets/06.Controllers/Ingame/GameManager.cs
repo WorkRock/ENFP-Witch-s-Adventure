@@ -88,7 +88,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        ScoreManager.SetStage(1);
        
         Com_Obj_Speed = Com_Obj_Speed_BasicDef;
         Com_Obj_Atk = Com_Obj_Atk_BasicDef;

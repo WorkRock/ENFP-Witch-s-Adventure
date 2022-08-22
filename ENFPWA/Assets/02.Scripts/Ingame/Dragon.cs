@@ -46,8 +46,8 @@ public class Dragon : MonoBehaviour
         //활성화 될때 hp바 만땅
         Dragon_HP_Bar.value = 1.0f;
 
-        Debug.Log(Dragon_Total_HP);
-        Debug.Log(Dragon_Now_HP);
+        Debug.Log($"Dragon_Total_HP : {Dragon_Total_HP}");
+        Debug.Log($"Dragon_Now_HP : {Dragon_Now_HP}");
 
         ScoreManager.SetIsDragonDie(false);
     }
@@ -80,7 +80,7 @@ public class Dragon : MonoBehaviour
 
             //체력 감소
             Dragon_Now_HP -= player.Player_Atk;
-            Debug.Log(Dragon_Now_HP);
+            Debug.Log($"Dragon_Now_HP : {Dragon_Now_HP}");
             //HP가 0보다 작아지면
             if (Dragon_Now_HP <= 0)
             {
