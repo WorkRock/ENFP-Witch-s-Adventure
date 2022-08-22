@@ -53,6 +53,7 @@
     <UnityVersion>2019.4.36f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +77,26 @@
     <Compile Include="Assets\06.Controllers\SoundManager.cs" />
   </ItemGroup>
   <ItemGroup>
+=======
+     <Compile Include="Assets\02.Scripts\Ingame\Border.cs" />
+     <Compile Include="Assets\02.Scripts\Ingame\Dragon.cs" />
+     <Compile Include="Assets\02.Scripts\Ingame\Floor.cs" />
+     <Compile Include="Assets\02.Scripts\Ingame\Player_Move.cs" />
+     <Compile Include="Assets\02.Scripts\Ingame\Shield.cs" />
+     <Compile Include="Assets\02.Scripts\Ingame\Wall.cs" />
+     <Compile Include="Assets\02.Scripts\Lobby\Upgrade.cs" />
+     <Compile Include="Assets\02.Scripts\Result\Result.cs" />
+     <Compile Include="Assets\06.Controllers\FadeController.cs" />
+     <Compile Include="Assets\06.Controllers\Fixed.cs" />
+     <Compile Include="Assets\06.Controllers\Ingame\GameManager.cs" />
+     <Compile Include="Assets\06.Controllers\Ingame\IG_BtnManager.cs" />
+     <Compile Include="Assets\06.Controllers\Ingame\ObjectManeger.cs" />
+     <Compile Include="Assets\06.Controllers\Lobby\LobbyManager.cs" />
+     <Compile Include="Assets\06.Controllers\Lobby\Lobby_BtnManager.cs" />
+     <Compile Include="Assets\06.Controllers\ScoreManager.cs" />
+     <Compile Include="Assets\06.Controllers\Singleton.cs" />
+     <Compile Include="Assets\06.Controllers\SoundManager.cs" />
+>>>>>>> 88e66c00c7a0d44198ee359233a609ef68495f9b
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.19f1\2019.4.36f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
