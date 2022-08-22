@@ -69,24 +69,12 @@
     <Compile Include="Assets\06.Controllers\Ingame\IG_BtnManager.cs" />
     <Compile Include="Assets\06.Controllers\Ingame\ObjectManeger.cs" />
     <Compile Include="Assets\06.Controllers\Lobby\LobbyManager.cs" />
+    <Compile Include="Assets\06.Controllers\Lobby\Lobby_BtnManager.cs" />
     <Compile Include="Assets\06.Controllers\ScoreManager.cs" />
     <Compile Include="Assets\06.Controllers\Singleton.cs" />
     <Compile Include="Assets\06.Controllers\SoundManager.cs" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
-=======
-     <Compile Include="Assets\02.Scripts\Ingame\Player_Move.cs" />
-     <Compile Include="Assets\02.Scripts\Lobby\Upgrade.cs" />
-     <Compile Include="Assets\02.Scripts\Result\Result.cs" />
-     <Compile Include="Assets\06.Controllers\Fixed.cs" />
-     <Compile Include="Assets\06.Controllers\Ingame\IG_BtnManager.cs" />
-     <Compile Include="Assets\06.Controllers\Lobby\LobbyManager.cs" />
-     <Compile Include="Assets\06.Controllers\Lobby\Lobby_BtnManager.cs" />
-     <Compile Include="Assets\06.Controllers\ScoreManager.cs" />
-     <Compile Include="Assets\06.Controllers\Singleton.cs" />
-     <Compile Include="Assets\06.Controllers\SoundManager.cs" />
->>>>>>> 63dadfc50fe87d48853f28422a280393291366be
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.19f1\2019.4.36f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

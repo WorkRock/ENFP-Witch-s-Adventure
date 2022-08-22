@@ -1,10 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Player_Move : MonoBehaviour
 {
+    [Header("UI")]
+    public GameObject[] ShieldImgs;
+    public Slider Player_HP_Bar;
+
     //플레이어 함수(HP, ATK)
+    [Space(10f)]
     [Header("Player HP")]
     public float Player_Total_HP;
     public float Player_Now_HP;
@@ -21,6 +28,7 @@ public class Player_Move : MonoBehaviour
     [Space(10f)]
     [Header ("Instances")]
     public ObjectManeger objectManeger;
+    public GameManager gameManager;
 
     //플레이어 위치 인덱스
     [Space(10f)]
@@ -47,7 +55,7 @@ public class Player_Move : MonoBehaviour
 
     //쉴드 on/off 상태
     public bool isShieldOn;
-       
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,12 +64,16 @@ public class Player_Move : MonoBehaviour
         curShieldCT = 0;
         curShieldDelay = 0;
 
+        Player_HP_Bar.value = 1.0f;
+
         //HP 초기화
-        Player_Total_HP = ScoreManager.GetPlayerHP();
+        //Player_Total_HP = ScoreManager.GetPlayerHP();
+        Player_Total_HP = 100;
         Player_Now_HP = Player_Total_HP;
 
         //공격력 초기화
-        Player_Atk = ScoreManager.GetPlayerTotalAtk();
+        //Player_Atk = ScoreManager.GetPlayerTotalAtk();
+        Player_Atk = 40;
 
         //쉴드 쿨타임 초기화
         Player_ShieldCT = ScoreManager.GetShieldCT();
@@ -88,6 +100,18 @@ public class Player_Move : MonoBehaviour
         {
             if (Shields[i].activeSelf)
                 Shields[i].transform.position = transform.position;
+        }
+
+        //쉴드 이미지 스왑
+        SwapShieldImg();
+
+        //플레이어 체력바 조정
+        Player_HP_Bar.value = Player_Now_HP / Player_Total_HP;
+        if (Player_Now_HP <= 0)
+        {
+            gameObject.SetActive(false);
+            Time.timeScale = 0;
+            //SceneManager.LoadScene("Result");
         }
     }
 
@@ -132,7 +156,7 @@ public class Player_Move : MonoBehaviour
         {
             isShieldOn = true;
             //플레이어 콜라이더 잠시 끄기
-            capsuleCollider.enabled = false;
+            //capsuleCollider.enabled = false;
 
             switch (nowShieldNum)
             {
@@ -181,7 +205,7 @@ public class Player_Move : MonoBehaviour
                 curShieldDelay = 0;
 
                 //플레이어 콜라이더 다시 켜기
-                capsuleCollider.enabled = true;
+                //capsuleCollider.enabled = true;
                 //태그명 플레이어로 다시 바꾸기
                 gameObject.tag = "Player";
 
@@ -194,6 +218,58 @@ public class Player_Move : MonoBehaviour
             curShieldCT -= Time.deltaTime;
             if (curShieldCT <= 0)
                 curShieldCT = 0;
+        }
+    }
+
+    //쉴드 이미지 스왑 함수
+    void SwapShieldImg()
+    {
+        switch (nowShieldNum)
+        {
+            //pyro img
+            case 0:
+                ShieldImgs[0].SetActive(true);
+                ShieldImgs[1].SetActive(false);
+                ShieldImgs[2].SetActive(false);
+                ShieldImgs[3].SetActive(false);
+                break;
+
+            //electro img
+            case 1:
+                ShieldImgs[0].SetActive(false);
+                ShieldImgs[1].SetActive(true);
+                ShieldImgs[2].SetActive(false);
+                ShieldImgs[3].SetActive(false);
+                break;
+
+            //ice img
+            case 2:
+                ShieldImgs[0].SetActive(false);
+                ShieldImgs[1].SetActive(false);
+                ShieldImgs[2].SetActive(true);
+                ShieldImgs[3].SetActive(false);
+                break;
+
+            //water img
+            case 3:
+                ShieldImgs[0].SetActive(false);
+                ShieldImgs[1].SetActive(false);
+                ShieldImgs[2].SetActive(false);
+                ShieldImgs[3].SetActive(true);
+                break;
+
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag.Equals("PyroBall") || collision.gameObject.tag.Equals("ElectroBall") || collision.gameObject.tag.Equals("IceBall") ||
+            collision.gameObject.tag.Equals("WaterBall") || collision.gameObject.tag.Equals("Obstacle"))
+        {
+            //충돌한 오브젝트 비활성화
+            collision.gameObject.SetActive(false);
+            //체력 감소
+            Player_Now_HP -= gameManager.Com_Obj_Atk;
         }
     }
 }

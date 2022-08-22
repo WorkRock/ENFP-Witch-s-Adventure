@@ -7,6 +7,7 @@ public class Shield : MonoBehaviour
     //스크립트 객체 생성
     [Header("Instances")]
     public ObjectManeger objectManeger;
+    public GameManager gameManager;
 
     [Space(10f)]
     public Player_Move player;
@@ -29,6 +30,9 @@ public class Shield : MonoBehaviour
                 (collision.gameObject.tag.Equals("IceBall") && gameObject.tag.Equals("IceShield")) ||
                 (collision.gameObject.tag.Equals("WaterBall") && gameObject.tag.Equals("WaterShield")))
             {
+                //드래곤 공격 비활성화
+                collision.gameObject.SetActive(false);
+
                 //오브젝트 생성, 생성 위치 지정
                 GameObject newPlayerAtk = objectManeger.MakeObj("Player_Atk");
                 newPlayerAtk.transform.position = transform.position;
@@ -41,16 +45,9 @@ public class Shield : MonoBehaviour
             //아닌 경우 플레이어 체력 - 드래곤 공격력
             else
             {
-
+                player.Player_Now_HP -= gameManager.Com_Obj_Atk;
+                
             }
-        }
-
-        //장애물에 맞았을 때
-        if(collision.gameObject.tag.Equals("Obstacle"))
-        {
-            //장애물 비활성화,  체력 감소
-            collision.gameObject.SetActive(false);
-
         }
     }
 }
