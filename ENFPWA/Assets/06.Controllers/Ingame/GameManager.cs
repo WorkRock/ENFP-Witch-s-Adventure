@@ -9,6 +9,11 @@ public class GameManager : MonoBehaviour
     public bool isDragonDie;
 
     [Space(10f)]
+    [Header("UI")]
+    public GameObject Ready_Img;
+    public GameObject Go_Img;
+
+    [Space(10f)]
     [Header("Instances")]
     public ObjectManeger objectManeger;
     public Player_Move player;
@@ -66,7 +71,9 @@ public class GameManager : MonoBehaviour
     public float Com_Obj_Delay_Max;             //1
 
     [Space(10f)]
-    [Header("Spawn Fdt")]
+    [Header("Fdt")]
+    public float fdt_Start;
+    private bool startEnd = false;
     public float fdt;
 
     [Space(10f)]
@@ -88,73 +95,48 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+        Stage = ScoreManager.GetStage();
+
         Com_Obj_Speed = Com_Obj_Speed_BasicDef;
         Com_Obj_Atk = Com_Obj_Atk_BasicDef;
         Com_Obj_Delay = Com_Obj_Delay_BasicDef;
+
+        //게임 시작 후 3초 후 드래곤 스폰
+        Invoke("SpawnDragon", 3f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Stage = ScoreManager.GetStage();
+        //레디 고 이미지 표출을 위한 시간 계산
+        fdt_Start += Time.deltaTime;
 
-        switch (Stage % 10)
+        if (fdt_Start >= 1f && startEnd == false)
+            Ready_Img.SetActive(true);
+        if (fdt_Start >= 2.5f && startEnd == false)
         {
-            //블루
-            case 1:
-                Dragons[0].SetActive(true);
-                break;
-
-            //그린
-            case 2:
-                Dragons[1].SetActive(true);
-                break;
-
-            //핑크
-            case 3:
-                Dragons[2].SetActive(true);
-                break;
-
-            //퍼플
-            case 4:
-                Dragons[3].SetActive(true);
-                break;
-
-            //레드
-            case 5:
-                Dragons[4].SetActive(true);
-                break;
-
-            //옐로우
-            case 6:
-                Dragons[5].SetActive(true);
-                break;
-
-            //블랙
-            case 7:
-                Dragons[6].SetActive(true);
-                break;
-
-            //블루
-            case 8:
-                Dragons[0].SetActive(true);
-                break;
-
-            //그린
-            case 9:
-                Dragons[1].SetActive(true);
-                break;
-
-            //핑크
-            case 0:
-                Dragons[2].SetActive(true);
-                break;
+            Ready_Img.SetActive(false);
+            Go_Img.SetActive(true);
         }
+        if (fdt_Start >= 3.2f && startEnd == false)
+        {
+            Go_Img.SetActive(false);
+            fdt_Start = 0;
+            startEnd = true;
+        }
+
+
+        Stage = ScoreManager.GetStage();
+        if (Stage <= 1)
+            Stage = 1;
 
         isDragonDie = ScoreManager.GetIsDragonDie();
 
-        if(!isDragonDie)
+        //드래곤 사망 true일때 3초 후 드래곤 스폰
+        if (isDragonDie)
+            Invoke("SpawnDragon", 3f);
+
+        else
         {
             //스피드
             Com_Obj_Speed = Com_Obj_Speed_BasicDef + ScoreManager.totalFloatFormula(Stage, Com_Obj_Speed_BasicPlus, Com_Obj_Speed_EditDef,
@@ -269,6 +251,62 @@ public class GameManager : MonoBehaviour
 
             //스폰 딜레이 초기화
             fdt = 0;
+        }
+    }
+
+    void SpawnDragon()
+    {
+        switch (Stage % 10)
+        {
+            //블루
+            case 1:
+                Dragons[0].SetActive(true);
+                break;
+
+            //그린
+            case 2:
+                Dragons[1].SetActive(true);
+                break;
+
+            //핑크
+            case 3:
+                Dragons[2].SetActive(true);
+                break;
+
+            //퍼플
+            case 4:
+                Dragons[3].SetActive(true);
+                break;
+
+            //레드
+            case 5:
+                Dragons[4].SetActive(true);
+                break;
+
+            //옐로우
+            case 6:
+                Dragons[5].SetActive(true);
+                break;
+
+            //블랙
+            case 7:
+                Dragons[6].SetActive(true);
+                break;
+
+            //블루
+            case 8:
+                Dragons[0].SetActive(true);
+                break;
+
+            //그린
+            case 9:
+                Dragons[1].SetActive(true);
+                break;
+
+            //핑크
+            case 0:
+                Dragons[2].SetActive(true);
+                break;
         }
     }
 }

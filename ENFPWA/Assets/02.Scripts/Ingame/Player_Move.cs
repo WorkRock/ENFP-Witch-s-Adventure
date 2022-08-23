@@ -9,6 +9,7 @@ public class Player_Move : MonoBehaviour
     [Header("UI")]
     public GameObject[] ShieldImgs;
     public Slider Player_HP_Bar;
+    public GameObject GameOver_Img;
 
     //플레이어 함수(HP, ATK)
     [Space(10f)]
@@ -29,6 +30,8 @@ public class Player_Move : MonoBehaviour
     [Header ("Instances")]
     public ObjectManeger objectManeger;
     public GameManager gameManager;
+    public SpriteRenderer spriteRenderer;
+    public CapsuleCollider2D capsuleCollider;
 
     //플레이어 위치 인덱스
     [Space(10f)]
@@ -41,7 +44,6 @@ public class Player_Move : MonoBehaviour
     //플레이어 쉴드
     [Space(10f)]
     [Header("Player Shield")]
-    public CapsuleCollider2D capsuleCollider;
     public GameObject[] Shields;
  
     private int nowShieldNum;
@@ -56,6 +58,11 @@ public class Player_Move : MonoBehaviour
     //쉴드 on/off 상태
     public bool isShieldOn;
 
+    //플레이어 피격 상태
+    public bool playerHit;
+    //피격상태 일때 시간을 누적할 변수
+    public float fdt_Hit;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,12 +74,14 @@ public class Player_Move : MonoBehaviour
         Player_HP_Bar.value = 1.0f;
 
         //HP 초기화
-        Player_Total_HP = ScoreManager.GetPlayerHP();
+        Player_Total_HP = 100;
+        //Player_Total_HP = ScoreManager.GetPlayerHP();
         Player_Now_HP = Player_Total_HP;
 
         //공격력 초기화
-        Player_Atk = ScoreManager.GetPlayerTotalAtk();
-       
+        //Player_Atk = ScoreManager.GetPlayerTotalAtk();
+        Player_Atk = 30;
+
         //쉴드 쿨타임 초기화
         Player_ShieldCT = ScoreManager.GetShieldCT();
     }
@@ -107,9 +116,25 @@ public class Player_Move : MonoBehaviour
         if (Player_Now_HP <= 0)
         {
             gameObject.SetActive(false);
-            Time.timeScale = 0;
-            SceneManager.LoadScene("Result");
+            GameOver_Img.SetActive(true);
+            Invoke("GoResult", 1.5f);
         }
+
+        //플레이어 무적상태일 때 시간을 계산
+        if(playerHit)
+        {
+            fdt_Hit += Time.deltaTime;
+            if(fdt_Hit >= 1f)
+            {
+                //플레이어 무적 해제
+                capsuleCollider.enabled = true;
+                //스프라이트 원래대로
+                spriteRenderer.color = new Color(1, 1, 1, 1);
+                //피격 상태 false로
+                playerHit = false;
+                fdt_Hit = 0;
+            }
+        }    
     }
 
     //플레이어 이동 함수
@@ -152,8 +177,6 @@ public class Player_Move : MonoBehaviour
         if (isShieldOn == false && curShieldCT == 0 && Input.GetKeyDown(KeyCode.Space))
         {
             isShieldOn = true;
-            //플레이어 콜라이더 잠시 끄기
-            //capsuleCollider.enabled = false;
 
             switch (nowShieldNum)
             {
@@ -201,8 +224,6 @@ public class Player_Move : MonoBehaviour
                 curShieldCT = maxShieldCT;
                 curShieldDelay = 0;
 
-                //플레이어 콜라이더 다시 켜기
-                //capsuleCollider.enabled = true;
                 //태그명 플레이어로 다시 바꾸기
                 gameObject.tag = "Player";
 
@@ -267,6 +288,17 @@ public class Player_Move : MonoBehaviour
             collision.gameObject.SetActive(false);
             //체력 감소
             Player_Now_HP -= gameManager.Com_Obj_Atk;
+            //1초간 플레이어 무적
+            capsuleCollider.enabled = false;
+            //스프라이트 잠시 흐리게
+            spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+            //피격 상태 true
+            playerHit = true;
         }
+    }
+
+    void GoResult()
+    {
+        SceneManager.LoadScene("Result");
     }
 }

@@ -37,6 +37,23 @@ public class Shield : MonoBehaviour
                 GameObject newPlayerAtk = objectManeger.MakeObj("Player_Atk");
                 newPlayerAtk.transform.position = transform.position;
 
+                //반사 위치에 따라 공격 기울기 조정
+                //왼쪽 패링
+                if (collision.gameObject.transform.position.x < 0)
+                {
+                    newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 150f);
+                }
+
+                //오른쪽 패링
+                else if (collision.gameObject.transform.position.x > 0)
+                {
+                    newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 210f);
+                }
+
+                //가운데 패링
+                else
+                    newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 180f);
+
                 //발사 방향 지정, 발사
                 Vector3 dirVec = targetPos.transform.position - transform.position;
                 newPlayerAtk.GetComponent<Rigidbody2D>().AddForce(dirVec * 1.5f, ForceMode2D.Impulse);

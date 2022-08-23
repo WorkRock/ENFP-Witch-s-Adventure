@@ -7,6 +7,12 @@ public class Dragon : MonoBehaviour
 {
     [Header("UI")]
     public Slider Dragon_HP_Bar;
+    
+    [Space(10f)]
+    [Header("Effect")]
+    public GameObject Explosion;
+    public bool ExplosionOn;
+    public float fdt_Explosion;
 
     //스테이지 값
     [Space(10f)]
@@ -37,9 +43,13 @@ public class Dragon : MonoBehaviour
 
     void OnEnable()
     {
+        Stage = ScoreManager.GetStage();
+        Debug.Log("Stage : " + Stage);
+
+        Dragon_Total_HP = Dragon_HP_BasicDef;
+
         //활성화될 때마다 hp계산
-        Dragon_Total_HP = Dragon_HP_BasicDef + ScoreManager.totalFloatFormula(Stage, Dragon_HP_BasicPlus, Dragon_HP_EditDef,
-            Dragon_HP_EditPlus, Dragon_HP_BasicCorStage, Dragon_HP_EditCorStage);
+        totalHPCal();
         Dragon_Now_HP = Dragon_Total_HP;
 
         Dragon_HP_Bar = GetComponentInChildren<Slider>();
@@ -70,6 +80,8 @@ public class Dragon : MonoBehaviour
         //hp <= 0 일시 드래곤 비활성화
         if (Dragon_Now_HP <= 0)
             gameObject.SetActive(false);
+
+        OnExplosion();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -78,6 +90,13 @@ public class Dragon : MonoBehaviour
         {
             collision.gameObject.SetActive(false);
 
+            //폭발 효과
+            if(!ExplosionOn)
+            {
+                Explosion.SetActive(true);
+                ExplosionOn = true;
+            }
+
             //체력 감소
             Dragon_Now_HP -= player.Player_Atk;
             Debug.Log($"Dragon_Now_HP : {Dragon_Now_HP}");
@@ -85,6 +104,31 @@ public class Dragon : MonoBehaviour
             if (Dragon_Now_HP <= 0)
             {
                 gameObject.SetActive(false);
+            }
+        }
+    }
+
+    void totalHPCal()
+    {
+        if (Stage <= 1)
+            return;
+
+        Dragon_Total_HP = Dragon_HP_BasicDef + ScoreManager.totalFloatFormula(Stage - 1, Dragon_HP_BasicPlus, Dragon_HP_EditDef,
+            Dragon_HP_EditPlus, Dragon_HP_BasicCorStage, Dragon_HP_EditCorStage);
+        
+    }
+
+    void OnExplosion()
+    {
+        //폭발상태 true일때 시간을 계산해서 1초가 지나면 폭발 비활성화, 폭발상태 false로 변경
+        if (ExplosionOn)
+        {
+            fdt_Explosion += Time.deltaTime;
+            if (fdt_Explosion >= 1f)
+            {
+                Explosion.SetActive(false);
+                ExplosionOn = false;
+                fdt_Explosion = 0;
             }
         }
     }
