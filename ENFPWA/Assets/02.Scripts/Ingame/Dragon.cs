@@ -14,6 +14,18 @@ public class Dragon : MonoBehaviour
     public bool ExplosionOn;
     public float fdt_Explosion;
 
+    [Space(10f)]
+    [Header("Animation")]
+    public GameObject Eye_Idle;
+    public GameObject Eye_Hit;
+    public bool isHit;
+    public float fdt_Hit;
+
+    [Space(5f)]
+    public GameObject Eye_Atk;
+    public GameObject Mouth_Atk;
+    public GameObject Mouth_Idle;
+
     //스테이지 값
     [Space(10f)]
     public int Stage;
@@ -43,6 +55,11 @@ public class Dragon : MonoBehaviour
 
     void OnEnable()
     {
+        //다시 활성화될 때 첫타격시 폭발효과가 씹히는 것 방지하기 위해 조건을 다 초기화
+        Explosion.SetActive(false);
+        ExplosionOn = false;
+        fdt_Explosion = 0;
+
         Stage = ScoreManager.GetStage();
         Debug.Log("Stage : " + Stage);
 
@@ -64,6 +81,9 @@ public class Dragon : MonoBehaviour
 
     void OnDisable()
     {
+        //다시 활성화될 때 x자눈으로 활성화 되는거 막기 위해 비활성화될 때 isHit를 false로 초기화
+        isHit = false;
+      
         //드래곤이 사라질 때마다 스테이지 값 + 1
         Stage++;
         ScoreManager.SetStage(Stage);
@@ -79,9 +99,18 @@ public class Dragon : MonoBehaviour
 
         //hp <= 0 일시 드래곤 비활성화
         if (Dragon_Now_HP <= 0)
-            gameObject.SetActive(false);
-
+        {
+            Invoke("DelayDisable", 0.5f);
+        }
+           
+        //폭발 효과
         OnExplosion();
+
+        //피격 애니메이션
+        HitAnim();
+
+        //공격 애니메이션
+        AtkAnim();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -89,6 +118,9 @@ public class Dragon : MonoBehaviour
         if (collision.gameObject.tag.Equals("Player_Atk"))
         {
             collision.gameObject.SetActive(false);
+            
+            //isHit를 true로 바꿔주고 애니메이션 변경은 update에서 한다. 필살기 맞아도 애니메이션 변경 해줘야하므로
+            isHit = true;
 
             //폭발 효과
             if(!ExplosionOn)
@@ -103,7 +135,7 @@ public class Dragon : MonoBehaviour
             //HP가 0보다 작아지면
             if (Dragon_Now_HP <= 0)
             {
-                gameObject.SetActive(false);
+                Invoke("DelayDisable", 0.5f);
             }
         }
     }
@@ -131,5 +163,66 @@ public class Dragon : MonoBehaviour
                 fdt_Explosion = 0;
             }
         }
+    }
+
+    void HitAnim()
+    {
+        if (isHit)
+        {
+            //애니메이션 변경
+            Eye_Idle.SetActive(false);
+            Eye_Hit.SetActive(true);
+
+            //isHit가 true이면 시간을 누적해서 n초 이상이면 애니메이션 원래대로
+            fdt_Hit += Time.deltaTime;
+            if (fdt_Hit >= 0.7f)
+            {
+                Eye_Idle.SetActive(true);
+                Eye_Hit.SetActive(false);
+                isHit = false;
+                fdt_Hit = 0;
+            }
+        }
+    }
+
+    void AtkAnim()
+    {
+        if (GameManager.isAtk && !isHit)
+        {
+            Eye_Atk.SetActive(true);
+            Eye_Idle.SetActive(false);
+
+            if (GameManager.isCenter_Atk)
+            {
+                Mouth_Atk.SetActive(true);
+                Mouth_Idle.SetActive(false);
+            }
+
+            //공격 중이라도 맞으면 피격애니메이션 재생
+            HitAnim();
+        }
+
+        else if (!GameManager.isAtk && !isHit)
+        {
+            Eye_Atk.SetActive(false);
+            Eye_Idle.SetActive(true);
+            Mouth_Atk.SetActive(false);
+            Mouth_Idle.SetActive(true);
+        }
+
+        else if (GameManager.isAtk && isHit)
+        {
+            Eye_Atk.SetActive(false);
+            Eye_Idle.SetActive(false);
+            Mouth_Atk.SetActive(false);
+            Mouth_Idle.SetActive(false);
+
+            HitAnim();
+        }
+    }
+
+    void DelayDisable()
+    {
+        gameObject.SetActive(false);
     }
 }

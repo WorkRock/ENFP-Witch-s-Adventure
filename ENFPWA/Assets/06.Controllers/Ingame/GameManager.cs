@@ -9,6 +9,19 @@ public class GameManager : MonoBehaviour
     public bool isDragonDie;
 
     [Space(10f)]
+    [Header("Alert")]
+    public GameObject AlertLine_Left;
+    public GameObject AlertLine_Center;
+    public GameObject AlertLine_Right;
+    public float fdt_Alert;
+    
+    [Space(10f)]
+    [Header("Dragon Animation")]
+    public static bool isAtk;
+    public static bool isCenter_Atk;
+    public float fdt_Atk;
+
+    [Space(10f)]
     [Header("UI")]
     public GameObject Ready_Img;
     public GameObject Go_Img;
@@ -108,23 +121,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //레디 고 이미지 표출을 위한 시간 계산
-        fdt_Start += Time.deltaTime;
-
-        if (fdt_Start >= 1f && startEnd == false)
-            Ready_Img.SetActive(true);
-        if (fdt_Start >= 2.5f && startEnd == false)
-        {
-            Ready_Img.SetActive(false);
-            Go_Img.SetActive(true);
-        }
-        if (fdt_Start >= 3.2f && startEnd == false)
-        {
-            Go_Img.SetActive(false);
-            fdt_Start = 0;
-            startEnd = true;
-        }
-
+        ReadyGo();
 
         Stage = ScoreManager.GetStage();
         if (Stage <= 1)
@@ -151,8 +148,30 @@ public class GameManager : MonoBehaviour
                 Com_Obj_Delay_EditPlus, Com_Obj_Delay_BasicCorStage, Com_Obj_Delay_EditCorStage);
 
             SpawnObjects();
-        }
-       
+
+            //공격 상태 true일 때 fdt_Atk에 시간 누적
+            if (isAtk)
+            {
+                fdt_Atk += Time.deltaTime;
+                //0.7초 지나면 다시 원래대로 초기화
+                if (fdt_Atk >= 0.7f)
+                {
+                    isAtk = false;
+                    isCenter_Atk = false;
+                    fdt_Atk = 0;
+                }
+            }   
+
+            if(AlertLine_Left.activeSelf || AlertLine_Center.activeSelf || AlertLine_Right.activeSelf)
+            {
+                fdt_Alert += Time.deltaTime;
+                if (fdt_Alert >= 0.5f)
+                {
+                    OffAlert();
+                    fdt_Alert = 0;
+                }         
+            }
+        }  
     }
 
     //오브젝트 스폰 함수
@@ -208,6 +227,20 @@ public class GameManager : MonoBehaviour
 
             }
 
+            //공격 경고라인
+            switch (ranPos_Ball)
+            {
+                case 0:
+                    AlertLine_Left.SetActive(true);                
+                    break;
+                case 1:
+                    AlertLine_Center.SetActive(true);             
+                    break;
+                case 2:
+                    AlertLine_Right.SetActive(true); 
+                    break;
+            }  
+
             //2. 드래곤 공격(랜덤 발사)
             switch (ranBall)
             {
@@ -251,6 +284,11 @@ public class GameManager : MonoBehaviour
 
             //스폰 딜레이 초기화
             fdt = 0;
+
+            //오브젝트 스폰될 때 isAtk를 true로 만들어서 dragon스크립트에서 접근
+            isAtk = true;
+            if (ranPos_Ball == 1)
+                isCenter_Atk = true;
         }
     }
 
@@ -308,5 +346,35 @@ public class GameManager : MonoBehaviour
                 Dragons[2].SetActive(true);
                 break;
         }
+    }
+
+    void ReadyGo()
+    {
+        if(!startEnd)
+        {
+            //레디 고 이미지 표출을 위한 시간 계산
+            fdt_Start += Time.deltaTime;
+
+            if (fdt_Start >= 1f)
+                Ready_Img.SetActive(true);
+            if (fdt_Start >= 2.5f)
+            {
+                Ready_Img.SetActive(false);
+                Go_Img.SetActive(true);
+            }
+            if (fdt_Start >= 3.2f)
+            {
+                Go_Img.SetActive(false);
+                startEnd = true;
+                fdt_Start = 0;
+            }
+        }
+    }
+
+    void OffAlert()
+    {
+        AlertLine_Left.SetActive(false);
+        AlertLine_Center.SetActive(false);
+        AlertLine_Right.SetActive(false);
     }
 }
