@@ -52,6 +52,7 @@ public class Dragon : MonoBehaviour
     [Space(10f)]
     [Header("Instances")]
     public Player_Move player;
+    public GameManager gameManager;
 
     void OnEnable()
     {
@@ -100,6 +101,7 @@ public class Dragon : MonoBehaviour
         //hp <= 0 일시 드래곤 비활성화
         if (Dragon_Now_HP <= 0)
         {
+            SoundManager.instance.PlayAudio_05("IG_DragonDie");
             Invoke("DelayDisable", 0.5f);
         }
            
@@ -118,6 +120,10 @@ public class Dragon : MonoBehaviour
         if (collision.gameObject.tag.Equals("Player_Atk"))
         {
             collision.gameObject.SetActive(false);
+
+            //필살기 스택 +1
+            gameManager.Special_Stack_Now++;
+            gameManager.Special_Atk_Bar.value += 0.1f;
             
             //isHit를 true로 바꿔주고 애니메이션 변경은 update에서 한다. 필살기 맞아도 애니메이션 변경 해줘야하므로
             isHit = true;
@@ -127,6 +133,7 @@ public class Dragon : MonoBehaviour
             {
                 Explosion.SetActive(true);
                 ExplosionOn = true;
+                SoundManager.instance.PlayAudio_02("IG_Explosion");
             }
 
             //체력 감소

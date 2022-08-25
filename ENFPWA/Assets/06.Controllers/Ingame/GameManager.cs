@@ -9,6 +9,16 @@ public class GameManager : MonoBehaviour
     public bool isDragonDie;
 
     [Space(10f)]
+    [Header("Special Attack")]
+    public Slider Special_Atk_Bar;
+    public GameObject Special_Logo_None;
+    public GameObject Special_Logo_Charged;
+    public GameObject Special_Btn_None;
+    public GameObject Special_Btn_Charged;
+    public int Special_Stack_Total = 10;
+    public int Special_Stack_Now;
+
+    [Space(10f)]
     [Header("Alert")]
     public GameObject AlertLine_Left;
     public GameObject AlertLine_Center;
@@ -108,6 +118,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Special_Stack_Now = 0;
+        Special_Atk_Bar.value = 0f;
+
         Stage = ScoreManager.GetStage();
 
         Com_Obj_Speed = Com_Obj_Speed_BasicDef;
@@ -122,6 +135,9 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         ReadyGo();
+
+        //필살기
+        SpecialAtk();
 
         Stage = ScoreManager.GetStage();
         if (Stage <= 1)
@@ -246,6 +262,7 @@ public class GameManager : MonoBehaviour
             {
                 //Pyro Ball
                 case 0:
+                    SoundManager.instance.PlayAudio_03("IG_PyroAtk");
                     newDragonBall = objectManeger.MakeObj("PyroBall");
                     newDragonBall.transform.position = SpawnPoints[ranPos_Ball].position;
 
@@ -255,6 +272,7 @@ public class GameManager : MonoBehaviour
 
                 //Electro Ball
                 case 1:
+                    SoundManager.instance.PlayAudio_03("IG_ElectroAtk");
                     newDragonBall = objectManeger.MakeObj("ElectroBall");
                     newDragonBall.transform.position = SpawnPoints[ranPos_Ball].position;
 
@@ -264,6 +282,7 @@ public class GameManager : MonoBehaviour
 
                 //Ice Ball
                 case 2:
+                    SoundManager.instance.PlayAudio_03("IG_IceAtk");
                     newDragonBall = objectManeger.MakeObj("IceBall");
                     newDragonBall.transform.position = SpawnPoints[ranPos_Ball].position;
 
@@ -273,6 +292,7 @@ public class GameManager : MonoBehaviour
 
                 //Water Ball
                 case 3:
+                    SoundManager.instance.PlayAudio_03("IG_WaterAtk");
                     newDragonBall = objectManeger.MakeObj("WaterBall");
                     newDragonBall.transform.position = SpawnPoints[ranPos_Ball].position;
 
@@ -356,11 +376,16 @@ public class GameManager : MonoBehaviour
             fdt_Start += Time.deltaTime;
 
             if (fdt_Start >= 1f)
+            {
                 Ready_Img.SetActive(true);
+                SoundManager.instance.PlayAudio_01("IG_Ready");
+            }
+                
             if (fdt_Start >= 2.5f)
             {
                 Ready_Img.SetActive(false);
                 Go_Img.SetActive(true);
+                SoundManager.instance.PlayAudio_01("IG_Go");
             }
             if (fdt_Start >= 3.2f)
             {
@@ -376,5 +401,42 @@ public class GameManager : MonoBehaviour
         AlertLine_Left.SetActive(false);
         AlertLine_Center.SetActive(false);
         AlertLine_Right.SetActive(false);
+    }
+
+    //필살기 함수
+    public void SpecialAtk()
+    {
+        if (Special_Stack_Now >= Special_Stack_Total)
+        {
+            Special_Logo_None.SetActive(false);
+            Special_Btn_None.SetActive(false);
+            Special_Logo_Charged.SetActive(true);
+            Special_Btn_Charged.SetActive(true);
+
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                Special_Stack_Now = 0;
+                Special_Atk_Bar.value = 0;
+
+                for (int i = 0; i < 30; i++)
+                {
+                    newDragonBall.SetActive(false);
+                    newObstacle.SetActive(false);
+                }
+
+                for(int i = 0; i < Dragons.Length; i++)
+                {
+                   if(Dragons[i].activeSelf)
+                    {
+                        Dragons[i].GetComponent<Dragon>().Dragon_Now_HP -= 100;
+                    }
+                }
+
+                Special_Logo_None.SetActive(true);
+                Special_Btn_None.SetActive(true);
+                Special_Logo_Charged.SetActive(false);
+                Special_Btn_Charged.SetActive(false);
+            }
+        }
     }
 }

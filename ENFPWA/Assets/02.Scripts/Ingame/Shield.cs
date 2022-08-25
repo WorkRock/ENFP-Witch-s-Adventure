@@ -30,6 +30,12 @@ public class Shield : MonoBehaviour
                 (collision.gameObject.tag.Equals("IceBall") && gameObject.tag.Equals("IceShield")) ||
                 (collision.gameObject.tag.Equals("WaterBall") && gameObject.tag.Equals("WaterShield")))
             {
+                //1~3번중 랜덤 패링 음성 재생
+                int ranParrySound = Random.Range(1, 4);
+                SoundManager.instance.PlayAudio_04("IG_Parrying_0" + ranParrySound);
+                //쉴드 튕길때 소리 재생
+                SoundManager.instance.PlayAudio_05("IG_PlayerParry");
+
                 //드래곤 공격 비활성화
                 collision.gameObject.SetActive(false);
 

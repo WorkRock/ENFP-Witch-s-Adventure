@@ -32,6 +32,7 @@ public class Player_Move : MonoBehaviour
     public GameManager gameManager;
     public SpriteRenderer spriteRenderer;
     public CapsuleCollider2D capsuleCollider;
+    public Dragon dragon;
 
     //플레이어 위치 인덱스
     [Space(10f)]
@@ -115,6 +116,9 @@ public class Player_Move : MonoBehaviour
         Player_HP_Bar.value = Player_Now_HP / Player_Total_HP;
         if (Player_Now_HP <= 0)
         {
+            //1, 2번중 랜덤 die사운드 재생
+            int ranSound = Random.Range(1, 3);
+            SoundManager.instance.PlayAudio_02("IG_PlayerDie_0" + ranSound);
             gameObject.SetActive(false);
             GameOver_Img.SetActive(true);
             Invoke("GoResult", 1.5f);
@@ -134,7 +138,7 @@ public class Player_Move : MonoBehaviour
                 playerHit = false;
                 fdt_Hit = 0;
             }
-        }    
+        }
     }
 
     //플레이어 이동 함수
@@ -176,6 +180,8 @@ public class Player_Move : MonoBehaviour
         //쉴드 On(isShieldOn이 false이고, 현재 쉴드 쿨타임이 0일때 space를 누르면)
         if (isShieldOn == false && curShieldCT == 0 && Input.GetKeyDown(KeyCode.Space))
         {
+            SoundManager.instance.PlayAudio_05("IG_ShieldOn");
+
             isShieldOn = true;
 
             switch (nowShieldNum)
@@ -284,6 +290,9 @@ public class Player_Move : MonoBehaviour
         if(collision.gameObject.tag.Equals("PyroBall") || collision.gameObject.tag.Equals("ElectroBall") || collision.gameObject.tag.Equals("IceBall") ||
             collision.gameObject.tag.Equals("WaterBall") || collision.gameObject.tag.Equals("Obstacle"))
         {
+            //1~3번중 랜덤 hit사운드 재생
+            int ranHitSound = Random.Range(1, 4);
+            SoundManager.instance.PlayAudio_01("IG_PlayerHit_0" + ranHitSound);
             //충돌한 오브젝트 비활성화
             collision.gameObject.SetActive(false);
             //체력 감소
@@ -300,5 +309,24 @@ public class Player_Move : MonoBehaviour
     void GoResult()
     {
         SceneManager.LoadScene("Result");
+    }
+
+    //@@@@@@@버튼 관련 함수(미완)
+    public void MovePlayerBtn(int _fHor)
+    { 
+        if (nowPos + _fHor <= maxPos && nowPos + _fHor >= minPos)
+        {
+            nowPos += (int)_fHor;
+        }
+
+        transform.position = Vector3.MoveTowards(transform.position, playerPos[nowPos].transform.position, 0.2f);
+    }
+
+    public void SwapShieldBtn()
+    {
+        nowShieldNum += 1;
+
+        if (nowShieldNum > 3)
+            nowShieldNum = 0;
     }
 }
