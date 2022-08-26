@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Shield : MonoBehaviour
 {
+    [Header("CutScene")]
+    public GameObject Cutscene;
+
     //스크립트 객체 생성
+    [Space(10f)]
     [Header("Instances")]
     public ObjectManeger objectManeger;
     public GameManager gameManager;
@@ -30,6 +34,11 @@ public class Shield : MonoBehaviour
                 (collision.gameObject.tag.Equals("IceBall") && gameObject.tag.Equals("IceShield")) ||
                 (collision.gameObject.tag.Equals("WaterBall") && gameObject.tag.Equals("WaterShield")))
             {
+                //컷씬 활성화
+                Cutscene.SetActive(true);
+                Time.timeScale = 0.7f;
+                Invoke("OffCutScene", 0.35f);
+
                 //1~3번중 랜덤 패링 음성 재생
                 int ranParrySound = Random.Range(1, 4);
                 SoundManager.instance.PlayAudio_04("IG_Parrying_0" + ranParrySound);
@@ -72,5 +81,11 @@ public class Shield : MonoBehaviour
                 
             }
         }
+    }
+
+    void OffCutScene()
+    {
+        Cutscene.SetActive(false);
+        Time.timeScale = 1;
     }
 }

@@ -5,9 +5,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public int Stage;
-    public bool isDragonDie;
-
     [Space(10f)]
     [Header("Special Attack")]
     public Slider Special_Atk_Bar;
@@ -35,6 +32,12 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public GameObject Ready_Img;
     public GameObject Go_Img;
+
+    [Space(10f)]
+    [Header("Stage")]
+    public Text StageText;
+    public int Stage;
+    public bool isDragonDie;
 
     [Space(10f)]
     [Header("Instances")]
@@ -121,7 +124,9 @@ public class GameManager : MonoBehaviour
         Special_Stack_Now = 0;
         Special_Atk_Bar.value = 0f;
 
+        //스테이지 및 스테이지 텍스트 초기화
         Stage = ScoreManager.GetStage();
+        StageText.text = "STAGE " + Stage.ToString();
 
         Com_Obj_Speed = Com_Obj_Speed_BasicDef;
         Com_Obj_Atk = Com_Obj_Atk_BasicDef;
@@ -139,7 +144,10 @@ public class GameManager : MonoBehaviour
         //필살기
         SpecialAtk();
 
+        //스테이지 및 스테이지 텍스트 업데이트
         Stage = ScoreManager.GetStage();
+        StageText.text = "STAGE " + ScoreManager.GetStage().ToString();
+
         if (Stage <= 1)
             Stage = 1;
 
@@ -148,7 +156,7 @@ public class GameManager : MonoBehaviour
         //드래곤 사망 true일때 3초 후 드래곤 스폰
         if (isDragonDie)
             Invoke("SpawnDragon", 3f);
-
+          
         else
         {
             //스피드
