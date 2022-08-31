@@ -45,6 +45,8 @@ public class SoundManager : MonoBehaviour
 
     private string NowBGMname="";
 
+    private string NowAudioname="";
+
 
     private bool isLobby;
     private bool isSoundOn;
@@ -65,14 +67,19 @@ public class SoundManager : MonoBehaviour
         isLobby = ScoreManager.GetIsLobby();
         isSoundOn = ScoreManager.GetIsSoundOn();
 
-        if(!isSoundOn) SoundOff();
+        if(!isSoundOn) 
+        {
+            SoundOff();
+            return;
+        }
 
         switch(SceneManager.GetActiveScene().name)
         {
             case "Lobby":
-            if(isLobby & isSoundOn)
+            if(isLobby)
             {
                 SoundOn();
+                BGM.volume = 1.0f;
                 PlayBGM("Lobby");
             }
             else
@@ -82,11 +89,14 @@ public class SoundManager : MonoBehaviour
             break;
 
             case "Ingame":
+            SoundOn();
             PlayBGM("Ingame");
+            BGM.volume = 0.5f;
             break;
 
             case "Result":
             PlayBGM("Result");
+            BGM.volume = 1.0f;
             break;
         }
     }
@@ -106,11 +116,14 @@ public class SoundManager : MonoBehaviour
 
     public void PlayAudio_01(string name)
     {
+        if (NowAudioname.Equals(name)) return;
+
         for (int i = 0; i < AudioList.Length; ++i)
             if (AudioList[i].name.Equals(name))
             {
                 audioSource_01.clip = AudioList[i].audio;
                 audioSource_01.Play();
+                NowAudioname = name;
             }
     }
 
