@@ -116,6 +116,12 @@ public class Player_Move : MonoBehaviour
         Player_HP_Bar.value = Player_Now_HP / Player_Total_HP;
         if (Player_Now_HP <= 0)
         {
+            //쉴드 잔상 제거
+            for (int i = 0; i < Shields.Length; i++)
+            {
+                if (Shields[i].activeSelf)
+                    Shields[i].SetActive(false);
+            }
             //1, 2번중 랜덤 die사운드 재생
             int ranSound = Random.Range(1, 3);
             SoundManager.instance.PlayAudio_02("IG_PlayerDie_0" + ranSound);

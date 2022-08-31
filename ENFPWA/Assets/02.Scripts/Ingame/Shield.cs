@@ -10,13 +10,9 @@ public class Shield : MonoBehaviour
     //스크립트 객체 생성
     [Space(10f)]
     [Header("Instances")]
-    public ObjectManeger objectManeger;
+    public ObjectManeger objectManager;
     public GameManager gameManager;
-
-    [Space(10f)]
     public Player_Move player;
-
-    [Space(10f)]
     public Dragon dragon;
 
     //공격을 발사할 타겟 위치
@@ -36,8 +32,8 @@ public class Shield : MonoBehaviour
             {
                 //컷씬 활성화
                 Cutscene.SetActive(true);
-                Time.timeScale = 0.7f;
-                Invoke("OffCutScene", 0.35f);
+                Time.timeScale = 0.1f;
+                Invoke("OffCutScene", 0.03f);
 
                 //1~3번중 랜덤 패링 음성 재생
                 int ranParrySound = Random.Range(1, 4);
@@ -49,7 +45,7 @@ public class Shield : MonoBehaviour
                 collision.gameObject.SetActive(false);
 
                 //오브젝트 생성, 생성 위치 지정
-                GameObject newPlayerAtk = objectManeger.MakeObj("Player_Atk");
+                GameObject newPlayerAtk = objectManager.MakeObj("Player_Atk");
                 newPlayerAtk.transform.position = transform.position;
 
                 //반사 위치에 따라 공격 기울기 조정
@@ -77,8 +73,7 @@ public class Shield : MonoBehaviour
             //아닌 경우 플레이어 체력 - 드래곤 공격력
             else
             {
-                player.Player_Now_HP -= gameManager.Com_Obj_Atk;
-                
+                player.Player_Now_HP -= gameManager.Com_Obj_Atk;             
             }
         }
     }

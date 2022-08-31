@@ -21,7 +21,8 @@ public class GameManager : MonoBehaviour
     public GameObject AlertLine_Center;
     public GameObject AlertLine_Right;
     public float fdt_Alert;
-    
+    public bool AlertOn;
+
     [Space(10f)]
     [Header("Dragon Animation")]
     public static bool isAtk;
@@ -157,6 +158,7 @@ public class GameManager : MonoBehaviour
         if (isDragonDie)
             Invoke("SpawnDragon", 3f);
           
+        //드래곤 사망 false일때
         else
         {
             //스피드
@@ -174,19 +176,9 @@ public class GameManager : MonoBehaviour
             SpawnObjects();
 
             //공격 상태 true일 때 fdt_Atk에 시간 누적
-            if (isAtk)
-            {
-                fdt_Atk += Time.deltaTime;
-                //0.7초 지나면 다시 원래대로 초기화
-                if (fdt_Atk >= 0.7f)
-                {
-                    isAtk = false;
-                    isCenter_Atk = false;
-                    fdt_Atk = 0;
-                }
-            }   
+            CheckAtk();
 
-            if(AlertLine_Left.activeSelf || AlertLine_Center.activeSelf || AlertLine_Right.activeSelf)
+            if (AlertLine_Left.activeSelf || AlertLine_Center.activeSelf || AlertLine_Right.activeSelf)
             {
                 fdt_Alert += Time.deltaTime;
                 if (fdt_Alert >= 0.5f)
@@ -251,19 +243,21 @@ public class GameManager : MonoBehaviour
 
             }
 
+            
             //공격 경고라인
             switch (ranPos_Ball)
             {
                 case 0:
-                    AlertLine_Left.SetActive(true);                
+                    AlertLine_Left.SetActive(true);
                     break;
                 case 1:
-                    AlertLine_Center.SetActive(true);             
+                    AlertLine_Center.SetActive(true);
                     break;
                 case 2:
-                    AlertLine_Right.SetActive(true); 
+                    AlertLine_Right.SetActive(true);
                     break;
-            }  
+            }
+            
 
             //2. 드래곤 공격(랜덤 발사)
             switch (ranBall)
@@ -386,7 +380,7 @@ public class GameManager : MonoBehaviour
             if (fdt_Start >= 1f)
             {
                 Ready_Img.SetActive(true);
-                SoundManager.instance.PlayAudio_01("IG_Ready");
+                SoundManager.instance.PlayAudio_02("IG_Ready");
             }
                 
             if (fdt_Start >= 2.5f)
@@ -409,6 +403,7 @@ public class GameManager : MonoBehaviour
         AlertLine_Left.SetActive(false);
         AlertLine_Center.SetActive(false);
         AlertLine_Right.SetActive(false);
+        AlertOn = false;
     }
 
     //필살기 함수
@@ -444,6 +439,22 @@ public class GameManager : MonoBehaviour
                 Special_Btn_None.SetActive(true);
                 Special_Logo_Charged.SetActive(false);
                 Special_Btn_Charged.SetActive(false);
+            }
+        }
+    }
+
+    //공격상태 체크
+    void CheckAtk()
+    {
+        if (isAtk)
+        {
+            fdt_Atk += Time.deltaTime;
+            //0.7초 지나면 다시 원래대로 초기화
+            if (fdt_Atk >= 0.7f)
+            {
+                isAtk = false;
+                isCenter_Atk = false;
+                fdt_Atk = 0;
             }
         }
     }
