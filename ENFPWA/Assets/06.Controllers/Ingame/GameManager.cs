@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     [Header("UI")]
     public GameObject Ready_Img;
     public GameObject Go_Img;
+    [SerializeField] private bool ReadyEnd;
+    [SerializeField] private bool GoEnd;
 
     [Space(10f)]
     [Header("Stage")]
@@ -99,7 +101,7 @@ public class GameManager : MonoBehaviour
 
     [Space(10f)]
     [Header("Fdt")]
-    public float fdt_Start;
+    [SerializeField] private float fdt_Start;
     private bool startEnd = false;
     public float fdt;
 
@@ -376,18 +378,20 @@ public class GameManager : MonoBehaviour
         {
             //레디 고 이미지 표출을 위한 시간 계산
             fdt_Start += Time.deltaTime;
-
-            if (fdt_Start >= 1f)
+            
+            if (fdt_Start >= 1f && !ReadyEnd)
             {
+                SoundManager.instance.PlayAudio_01("IG_Ready");
                 Ready_Img.SetActive(true);
-                SoundManager.instance.PlayAudio_02("IG_Ready");
+                ReadyEnd = true;
             }
                 
-            if (fdt_Start >= 2.5f)
+            if (fdt_Start >= 2.5f && ReadyEnd && !GoEnd)
             {
                 Ready_Img.SetActive(false);
                 Go_Img.SetActive(true);
                 SoundManager.instance.PlayAudio_01("IG_Go");
+                GoEnd = true;
             }
             if (fdt_Start >= 3.2f)
             {

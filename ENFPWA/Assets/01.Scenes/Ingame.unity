@@ -2358,7 +2358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Cutscene: {fileID: 1159831898}
-  objectManager: {fileID: 0}
+  objectManager: {fileID: 2100089159}
   gameManager: {fileID: 1101548720}
   player: {fileID: 1108403419}
   dragon: {fileID: 1642581022}
@@ -3209,7 +3209,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Cutscene: {fileID: 1159831898}
-  objectManager: {fileID: 0}
+  objectManager: {fileID: 2100089159}
   gameManager: {fileID: 1101548720}
   player: {fileID: 1108403419}
   dragon: {fileID: 1642581022}
@@ -6440,7 +6440,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Cutscene: {fileID: 1159831898}
-  objectManager: {fileID: 0}
+  objectManager: {fileID: 2100089159}
   gameManager: {fileID: 1101548720}
   player: {fileID: 1108403419}
   dragon: {fileID: 1642581022}
@@ -6939,6 +6939,8 @@ MonoBehaviour:
   fdt_Atk: 0
   Ready_Img: {fileID: 1248206531}
   Go_Img: {fileID: 2022669709}
+  ReadyEnd: 0
+  GoEnd: 0
   StageText: {fileID: 278594738}
   Stage: 0
   isDragonDie: 0
@@ -9395,6 +9397,101 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1533504523}
   m_CullTransparentMesh: 0
+--- !u!1 &1544949789
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1544949791}
+  - component: {fileID: 1544949790}
+  m_Layer: 0
+  m_Name: SoundManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1544949790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544949789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7a44fa8efbeafe42b767c880f56bd8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BGMList:
+  - name: Lobby
+    audio: {fileID: 8300000, guid: bbc615f6d1490e34faddd424e04a845f, type: 3}
+  - name: Ingame
+    audio: {fileID: 8300000, guid: 8581847f77632df479d2aa83b9e17631, type: 3}
+  - name: Result
+    audio: {fileID: 8300000, guid: 2ef3cfc78f7e19b4c85e38fdf5dd38c6, type: 3}
+  AudioList:
+  - name: Btn_MenuIn
+    audio: {fileID: 8300000, guid: c2b756b894e37d7419d1fdbbd9ec337b, type: 3}
+  - name: Btn_MenuOut
+    audio: {fileID: 8300000, guid: 81e3ec18b5f66464d85a925a76d42c74, type: 3}
+  - name: Btn_Upgrade
+    audio: {fileID: 8300000, guid: 15cf92eb471c18b4b8a000e5e88f9869, type: 3}
+  - name: Btn_Normal
+    audio: {fileID: 8300000, guid: 6bd4a7247c1fc734e834de67ea1cdf7c, type: 3}
+  - name: IG_Ready
+    audio: {fileID: 8300000, guid: de9ac939167c22949a24c0777d232596, type: 3}
+  - name: IG_Go
+    audio: {fileID: 8300000, guid: 09b2aa49476229548ad5ff0dec5311f3, type: 3}
+  - name: IG_PlayerHit_01
+    audio: {fileID: 8300000, guid: 85260b64e3f91204db48236bcad01ae2, type: 3}
+  - name: IG_PlayerHit_02
+    audio: {fileID: 8300000, guid: 13065e6876c8d084bb0f6901c561d118, type: 3}
+  - name: IG_PlayerHit_03
+    audio: {fileID: 8300000, guid: 69f73a03c455c474aac238e4c7fd80bc, type: 3}
+  - name: IG_Explosion
+    audio: {fileID: 8300000, guid: c1db27a717f8e044494148c7b4edc304, type: 3}
+  - name: IG_PlayerDie_01
+    audio: {fileID: 8300000, guid: 2f4de261afd6de242aee234d9f0096c3, type: 3}
+  - name: IG_PlayerDie_02
+    audio: {fileID: 8300000, guid: 2aecfb4eaa3f34244b7fbca7fafe0ca1, type: 3}
+  - name: IG_ElectroAtk
+    audio: {fileID: 8300000, guid: 3c164218f18b4aa4a9f915576dfa14b9, type: 3}
+  - name: IG_WaterAtk
+    audio: {fileID: 8300000, guid: 1a446e2d72260494d8dadec5555ca793, type: 3}
+  - name: IG_PyroAtk
+    audio: {fileID: 8300000, guid: 497b1e45b96455c4e928fcc739ea69db, type: 3}
+  - name: IG_IceAtk
+    audio: {fileID: 8300000, guid: cc813d435417723448239c6328191c2e, type: 3}
+  - name: IG_ShieldOn
+    audio: {fileID: 8300000, guid: 6774040f220d1db408c12a4ae4b73197, type: 3}
+  - name: IG_Parrying_01
+    audio: {fileID: 8300000, guid: 32e6e5daaaae04742a95b8abb0b91199, type: 3}
+  - name: IG_Parrying_02
+    audio: {fileID: 8300000, guid: f569d5a8876846a4daca6ab26d86a6ef, type: 3}
+  - name: IG_Parrying_03
+    audio: {fileID: 8300000, guid: e5f1093e33e215e49836af3207e3e392, type: 3}
+  - name: IG_PlayerParry
+    audio: {fileID: 8300000, guid: a170440e89647e14994eb79f271e99ff, type: 3}
+  - name: IG_DragonDie
+    audio: {fileID: 8300000, guid: 5a460fe484223e4499a0f401f7830877, type: 3}
+--- !u!4 &1544949791
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1544949789}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 23
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1552867107
 GameObject:
   m_ObjectHideFlags: 0
@@ -11941,7 +12038,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Cutscene: {fileID: 1159831898}
-  objectManager: {fileID: 0}
+  objectManager: {fileID: 2100089159}
   gameManager: {fileID: 1101548720}
   player: {fileID: 1108403419}
   dragon: {fileID: 1642581022}
