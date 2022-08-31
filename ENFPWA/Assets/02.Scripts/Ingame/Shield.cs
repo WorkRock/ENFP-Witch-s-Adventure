@@ -30,57 +30,61 @@ public class Shield : MonoBehaviour
                 (collision.gameObject.tag.Equals("IceBall") && gameObject.tag.Equals("IceShield")) ||
                 (collision.gameObject.tag.Equals("WaterBall") && gameObject.tag.Equals("WaterShield")))
             {
+                //드래곤 공격 비활성화
+                collision.gameObject.SetActive(false);
+
                 //컷씬 활성화
                 Cutscene.SetActive(true);
                 Time.timeScale = 0.1f;
-                Invoke("OffCutScene", 0.03f);
+                Invoke("OnRealTime", 0.04f);
+                Invoke("OffCutScene", 0.3f);
 
                 //1~3번중 랜덤 패링 음성 재생
                 int ranParrySound = Random.Range(1, 4);
                 SoundManager.instance.PlayAudio_04("IG_Parrying_0" + ranParrySound);
                 //쉴드 튕길때 소리 재생
                 SoundManager.instance.PlayAudio_05("IG_PlayerParry");
-
-                //드래곤 공격 비활성화
-                collision.gameObject.SetActive(false);
-
-                //오브젝트 생성, 생성 위치 지정
-                GameObject newPlayerAtk = objectManager.MakeObj("Player_Atk");
-                newPlayerAtk.transform.position = transform.position;
-
-                //반사 위치에 따라 공격 기울기 조정
-                //왼쪽 패링
-                if (collision.gameObject.transform.position.x < 0)
-                {
-                    newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 150f);
-                }
-
-                //오른쪽 패링
-                else if (collision.gameObject.transform.position.x > 0)
-                {
-                    newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 210f);
-                }
-
-                //가운데 패링
-                else
-                    newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 180f);
-
-                //발사 방향 지정, 발사
-                Vector3 dirVec = targetPos.transform.position - transform.position;
-                newPlayerAtk.GetComponent<Rigidbody2D>().AddForce(dirVec * 1.5f, ForceMode2D.Impulse);
             }
 
             //아닌 경우 플레이어 체력 - 드래곤 공격력
             else
             {
-                player.Player_Now_HP -= gameManager.Com_Obj_Atk;             
+                player.Player_Now_HP -= gameManager.Com_Obj_Atk;
             }
         }
     }
 
+    void OnRealTime()
+    {
+        Time.timeScale = 1;
+        //오브젝트 생성, 생성 위치 지정
+        GameObject newPlayerAtk = objectManager.MakeObj("Player_Atk");
+        newPlayerAtk.transform.position = transform.position;
+
+        //반사 위치에 따라 공격 기울기 조정
+        //왼쪽 패링
+        if (gameObject.transform.position.x <= -1)
+        {
+            newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 150f);
+        }
+
+        //오른쪽 패링
+        else if (gameObject.transform.position.x >= 1)
+        {
+            newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 210f);
+        }
+
+        //가운데 패링
+        else
+            newPlayerAtk.transform.rotation = Quaternion.Euler(0, 0, 180f);
+
+        //발사 방향 지정, 발사
+        Vector3 dirVec = targetPos.transform.position - transform.position;
+        newPlayerAtk.GetComponent<Rigidbody2D>().AddForce(dirVec * 1.8f, ForceMode2D.Impulse);
+
+    }
     void OffCutScene()
     {
-        Cutscene.SetActive(false);
-        Time.timeScale = 1;
+        Cutscene.SetActive(false); 
     }
 }

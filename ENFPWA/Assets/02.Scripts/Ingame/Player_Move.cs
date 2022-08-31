@@ -24,6 +24,7 @@ public class Player_Move : MonoBehaviour
     [Space(10f)]
     [Header("Player Shield CT")]
     public float Player_ShieldCT;
+    public Text ShieldCT_Text;
 
     //스크립트 객체 생성
     [Space(10f)]
@@ -75,14 +76,12 @@ public class Player_Move : MonoBehaviour
         Player_HP_Bar.value = 1.0f;
 
         //HP 초기화
-        Player_Total_HP = 100;
-        //Player_Total_HP = ScoreManager.GetPlayerHP();
+        Player_Total_HP = ScoreManager.GetPlayerHP();
         Player_Now_HP = Player_Total_HP;
 
         //공격력 초기화
-        //Player_Atk = ScoreManager.GetPlayerTotalAtk();
-        Player_Atk = 30;
-
+        Player_Atk = ScoreManager.GetPlayerTotalAtk();
+       
         //쉴드 쿨타임 초기화
         Player_ShieldCT = ScoreManager.GetShieldCT();
     }
@@ -245,9 +244,14 @@ public class Player_Move : MonoBehaviour
         //쉴드 off일땐 현재 shield 쿨타임에서 시간을 뺌
         else
         {
+            ShieldCT_Text.enabled = true;
             curShieldCT -= Time.deltaTime;
+            ShieldCT_Text.text = curShieldCT.ToString("F1");
             if (curShieldCT <= 0)
+            {
+                ShieldCT_Text.enabled = false;
                 curShieldCT = 0;
+            }
         }
     }
 

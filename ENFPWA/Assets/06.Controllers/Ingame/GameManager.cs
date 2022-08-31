@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     [Space(10f)]
     [Header("Alert")]
+    private bool isSpawn;
     public GameObject AlertLine_Left;
     public GameObject AlertLine_Center;
     public GameObject AlertLine_Right;
@@ -124,6 +125,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isSpawn = false;
         Special_Stack_Now = 0;
         Special_Atk_Bar.value = 0f;
 
@@ -197,25 +199,18 @@ public class GameManager : MonoBehaviour
     {
         fdt += Time.deltaTime;
 
-        if (fdt >= Com_Obj_Delay)
+        if(fdt >= (Com_Obj_Delay - 0.5f) && !isSpawn)
         {
             //1. 장애물
             //랜덤 위치
             ranPos_Obs = Random.Range(0, 3);
             //랜덤 드래곤볼
             ranBall = Random.Range(0, 4);
-
+            //공격 경고라인
             switch (ranPos_Obs)
             {
                 case 0:
                     ranPos_Ball = Random.Range(1, 3);
-
-                    //장애물 발사
-                    newObstacle = objectManeger.MakeObj("Obstacle");
-                    newObstacle.transform.position = SpawnPoints[0].position;
-
-                    dirVec_Obs = player.playerPos[0].transform.position - newObstacle.transform.position;
-                    newObstacle.GetComponent<Rigidbody2D>().AddForce(dirVec_Obs * Com_Obj_Speed * 0.1f, ForceMode2D.Impulse);
                     break;
                 case 1:
                     while (true)
@@ -224,29 +219,12 @@ public class GameManager : MonoBehaviour
                         if (ranPos_Ball != 1)
                             break;
                     }
-
-                    //장애물 발사
-                    newObstacle = objectManeger.MakeObj("Obstacle");
-                    newObstacle.transform.position = SpawnPoints[1].position;
-
-                    dirVec_Obs = player.playerPos[1].transform.position - newObstacle.transform.position;
-                    newObstacle.GetComponent<Rigidbody2D>().AddForce(dirVec_Obs * Com_Obj_Speed * 0.1f, ForceMode2D.Impulse);
                     break;
                 case 2:
                     ranPos_Ball = Random.Range(0, 2);
-
-                    //장애물 발사
-                    newObstacle = objectManeger.MakeObj("Obstacle");
-                    newObstacle.transform.position = SpawnPoints[2].position;
-
-                    dirVec_Obs = player.playerPos[2].transform.position - newObstacle.transform.position;
-                    newObstacle.GetComponent<Rigidbody2D>().AddForce(dirVec_Obs * Com_Obj_Speed * 0.1f, ForceMode2D.Impulse);
                     break;
-
             }
 
-            
-            //공격 경고라인
             switch (ranPos_Ball)
             {
                 case 0:
@@ -259,6 +237,47 @@ public class GameManager : MonoBehaviour
                     AlertLine_Right.SetActive(true);
                     break;
             }
+            isSpawn = true;
+        }
+
+
+        if (fdt >= Com_Obj_Delay)
+        {
+            switch (ranPos_Obs)
+            {
+                case 0:
+                    //장애물 발사
+                    newObstacle = objectManeger.MakeObj("Obstacle");
+                    newObstacle.transform.position = SpawnPoints[0].position;
+
+                    dirVec_Obs = player.playerPos[0].transform.position - newObstacle.transform.position;
+                    newObstacle.GetComponent<Rigidbody2D>().AddForce(dirVec_Obs * Com_Obj_Speed * 0.1f, ForceMode2D.Impulse);
+                    break;
+                case 1:
+                    
+
+                    //장애물 발사
+                    newObstacle = objectManeger.MakeObj("Obstacle");
+                    newObstacle.transform.position = SpawnPoints[1].position;
+
+                    dirVec_Obs = player.playerPos[1].transform.position - newObstacle.transform.position;
+                    newObstacle.GetComponent<Rigidbody2D>().AddForce(dirVec_Obs * Com_Obj_Speed * 0.1f, ForceMode2D.Impulse);
+                    break;
+                case 2:
+                    
+
+                    //장애물 발사
+                    newObstacle = objectManeger.MakeObj("Obstacle");
+                    newObstacle.transform.position = SpawnPoints[2].position;
+
+                    dirVec_Obs = player.playerPos[2].transform.position - newObstacle.transform.position;
+                    newObstacle.GetComponent<Rigidbody2D>().AddForce(dirVec_Obs * Com_Obj_Speed * 0.1f, ForceMode2D.Impulse);
+                    break;
+
+            }
+
+            
+            
             
 
             //2. 드래곤 공격(랜덤 발사)
@@ -313,6 +332,8 @@ public class GameManager : MonoBehaviour
             isAtk = true;
             if (ranPos_Ball == 1)
                 isCenter_Atk = true;
+
+            isSpawn = false;
         }
     }
 
@@ -386,14 +407,14 @@ public class GameManager : MonoBehaviour
                 ReadyEnd = true;
             }
                 
-            if (fdt_Start >= 2.5f && ReadyEnd && !GoEnd)
+            if (fdt_Start >= 2.8f && ReadyEnd && !GoEnd)
             {
                 Ready_Img.SetActive(false);
                 Go_Img.SetActive(true);
                 SoundManager.instance.PlayAudio_01("IG_Go");
                 GoEnd = true;
             }
-            if (fdt_Start >= 3.2f)
+            if (fdt_Start >= 3.5f)
             {
                 Go_Img.SetActive(false);
                 startEnd = true;
